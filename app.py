@@ -25,6 +25,11 @@ db = SQLAlchemy(app)
 
 # TODO: connect to a local postgresql database
 
+SQLALCHEMY_DATABASE_URI = 'postgresql://josorio:12345@localhost:5432/fyyur'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
 #----------------------------------------------------------------------------#
 # Models.
 #----------------------------------------------------------------------------#
@@ -58,6 +63,27 @@ class Artist(db.Model):
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+
+class Show(db.Model):
+   ...
+   __tablename__ ='show'
+   id = db.Column(db.Integer, primary_key=True)
+   ...
+   #Foreing Keys
+   artist_id = db.Column(db.Integer,db.ForeignKey('Artist.id'))
+   venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'))
+
+   #relationship
+   artist =db.relationship(
+    Artist,
+    backref=db.backref('shows', cascade='all, delete')
+    )
+   
+   venue = db.relationship(
+    Venue,
+    backref=db.backref('shows', cascade='all, delete')
+   )
+
 
 #----------------------------------------------------------------------------#
 # Filters.
